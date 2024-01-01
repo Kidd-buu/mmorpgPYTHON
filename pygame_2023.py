@@ -1,127 +1,127 @@
 import pygame
 import random
 
-# Initialize Pygame
 pygame.init()
 
-# Set the screen dimensions
-screen_width = 980
-screen_height = 680
-screen = pygame.display.set_mode((screen_width, screen_height))
+# Define some colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GOLD = (255, 215, 0)
+RED = (255, 0, 0)
 
-# Set the player's health
-player_health = 100
+# Set the width and height of the screen [width, height]
+size = (700, 700)
+screen = pygame.display.set_mode(size)
 
-# Set the NPC's health
-npc_health = 100
+pygame.display.set_caption("Kidd Buu Game")
 
-# Define the player class
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill((255, 0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = (screen_width // 2, screen_height // 2)
-        self.health = player_health
-        self.speed = 1 # Change this value to adjust the player's speed
-        self.score = 0
+# Loop until the user clicks the close button.
+done = False
 
-    def update(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and self.rect.left > 0:
-            self.rect.x -= self.speed
-        if keys[pygame.K_RIGHT] and self.rect.right < screen_width:
-            self.rect.x += self.speed
-        if keys[pygame.K_UP] and self.rect.top > 0:
-            self.rect.y -= self.speed
-        if keys[pygame.K_DOWN] and self.rect.bottom < screen_height:
-            self.rect.y += self.speed
+# Used to manage how fast the screen updates
+clock = pygame.time.Clock()
 
-# Define the NPC class
-class NPC(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill((0, 255, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = (screen_width // 4, screen_height // 4)
-        self.health = npc_health
-        self.speed = 1 # Change this value to adjust the NPC's speed
-        self.score = 0
+# Set up the player
+player = pygame.Rect(50, 50, 50, 50)
+player_hp = 100
+player_speed = 5
 
-    def update(self):
-        dx = fruit.rect.x - self.rect.x
-        dy = fruit.rect.y - self.rect.y
-        dist = max(1, (dx ** 2 + dy ** 2) ** 0.5)
-        dx = dx / dist
-        dy = dy / dist
-        self.rect.x += dx * self.speed
-        self.rect.y += dy * self.speed
+# Set up the tree
+tree = pygame.Rect(500, 50, 50, 50)
+tree_hp = 10
 
-# Define the fruit class
-class Fruit(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((20, 20))
-        self.image.fill((255, 255, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = (random.randint(0, screen_width), random.randint(0, screen_height))
+# Set up the rock
+rock = pygame.Rect(250, 50, 50, 50)
+rock_hp = 100
 
-    def update(self):
-        pass
+# Set up the Gold Coin
+coin = pygame.Rect(10, 10, 10, 10)
+gold_score = 0
 
-# Create the player, NPC, and fruit sprites
-player = Player()
-npc = NPC()
-fruit = Fruit()
 
-# Create the sprite groups
-all_sprites = pygame.sprite.Group()
-all_sprites.add(player, npc, fruit)
+# Set up the experience
+experience = 0
+gold = 0
 
-# Set the game loop
-running = True
-while running:
-    # Handle events
+# Set up the main level
+main_level = 1
+main_level_experience = 0
+main_level_experience_needed = 10
+
+# Set up the font
+font = pygame.font.SysFont(None, 25)
+
+# -------- Main Program Loop -----------
+while not done:
+    # --- Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            done = True
 
-    # Update the sprites
-    all_sprites.update()
+    # --- Game logic should go here
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player.x -= player_speed
+    if keys[pygame.K_RIGHT]:
+        player.x += player_speed
+    if keys[pygame.K_UP]:
+        player.y -= player_speed
+    if keys[pygame.K_DOWN]:
+        player.y += player_speed
+        
+    # collect gold coin
+    if player.colliderect(coin):
+        gold += 1
+        coin.x = random.randint(0, size[0] - coin.width)
+        coin.y = random.randint(0, size[1] - coin.height)
+        
+     # Check if player has hit the rock
+    if player.colliderect(rock):
+        experience -= 1
+        main_level_experience -= -1
+        print(f"Experience: {experience}")
+        if main_level_experience >= main_level_experience_needed:
+            main_level += -1
+            main_level_experience = -1
+            print(f"Main Level: {main_level}")
+        # Check if the player has hit the tree
+    if player.colliderect(tree):
+        experience += 1
+        main_level_experience += 1
+        print(f"Experience: {experience}")
+        if main_level_experience >= main_level_experience_needed:
+            main_level += 1
+            main_level_experience_needed = int(main_level_experience_needed * 1.1)
+            main_level_experience = 0
+            print(f"Main Level: {main_level}")
+            
+    
 
-    # Check for collisions between the player and fruit
-    if pygame.sprite.collide_rect(player, fruit):
-        player.score += 1
-        fruit.kill()
-        fruit = Fruit()
-        all_sprites.add(fruit)
+    # --- Drawing code should go here
+    screen.fill(WHITE)
+    pygame.draw.rect(screen, BLACK, player)
+    pygame.draw.rect(screen, BLACK, tree)
+    pygame.draw.rect(screen, BLACK, rock)
+    pygame.draw.rect(screen, GOLD, coin)
 
-    # Check for collisions between the NPC and fruit
-    if pygame.sprite.collide_rect(npc, fruit):
-        npc.score += 1
-        fruit.kill()
-        fruit = Fruit()
-        all_sprites.add(fruit)
+    # Draw the experience score in the top right corner of the screen
+    score_text = font.render(f"Experience: {experience}", True, BLACK)
+    screen.blit(score_text, (size[0] - score_text.get_width(), 0))
+    
+    # Draw the gold score in the top right of the screen
+    score_gold = font.render(f"Gold: {gold}", True, RED)
+    screen.blit(score_gold, (size[0] - score_gold.get_width(), 15))
+    
 
-    # Draw the sprites
-    screen.fill((255, 255, 255))
-    all_sprites.draw(screen)
+    # Draw the main level in the top left corner of the screen
+    level_text = font.render(f"Main Level: {main_level}", True, BLACK)
+    screen.blit(level_text, (0, 0))
 
-    # Draw the health bars
-    pygame.draw.rect(screen, (255, 0, 0), (10, 10, player.health, 10))
-    pygame.draw.rect(screen, (0, 255, 0), (10, 30, npc.health, 10))
-
-    # Draw the score
-    font = pygame.font.Font(None, 36)
-    player_score_text = font.render(f"Player Score: {player.score}", True, (0, 0, 0))
-    npc_score_text = font.render(f"NPC Score: {npc.score}", True, (0, 0, 0))
-    screen.blit(player_score_text, (screen_width - player_score_text.get_width() - 10, 10))
-    screen.blit(npc_score_text, (screen_width - npc_score_text.get_width() - 10, 30))
-
-    # Update the display
+    # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
-# Quit Pygame
+    # --- Limit to 60 frames per second
+    clock.tick(60)
+
+# Close the window and quit.
 pygame.quit()
