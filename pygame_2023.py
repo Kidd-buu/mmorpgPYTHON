@@ -38,7 +38,6 @@ npc_hp = 100
 npc_speed = 5
 
 
-
 # Set up the tree
 tree = pygame.Rect(500, 50, 50, 50)
 tree_hp = 10
@@ -65,7 +64,6 @@ main_level_experience_needed = 10
 
 # Set up the font
 font = pygame.font.SysFont(None, 25)
-print("1")
 
 # -------- Main Program Loop -----------
 while not done:
@@ -96,7 +94,7 @@ while not done:
     if keys[pygame.K_DOWN]:
         player.y += player_speed
         
-        # shoot circle object
+    # shoot circle object
     if keys[pygame.K_SPACE]:
         circle = pygame.draw.circle(screen, RED, (player.x + player.width // 2, player.y + player.height // 2), 10)
         if circle.colliderect(tree):
@@ -159,12 +157,8 @@ while not done:
     rock.clamp_ip(screen.get_rect())
     npc.clamp_ip(screen.get_rect())
 
-     # Draw the health bars
-    player_health = font.render(f"Player_HP: {player_hp}", True, RED)
-    screen.blit(player_health, (size[0] - player_health.get_width(), 15))
-    
-    #player_health = font.render(f"Player_HP: {player_hp}", True, RED)
-    #screen.blit(player_health, (0, size[1] - player_health.get_height()))
+
+
 
     # --- Drawing code should go here
     screen.fill(WHITE)
@@ -183,11 +177,14 @@ while not done:
     score_gold = font.render(f"Gold: {gold}", True, RED)
     screen.blit(score_gold, (size[0] - score_gold.get_width(), 15))
     
-
     # Draw the main level in the top left corner of the screen
     level_text = font.render(f"Main Level: {main_level}", True, BLACK)
     screen.blit(level_text, (0, 0))
 
+    # Draw Player Health
+    player_health = font.render(f"Health: {player_hp}", True, RED)
+    screen.blit(player_health, (0, 20))
+    
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
@@ -196,9 +193,6 @@ while not done:
 
 # Close the window and quit.
 pygame.quit()
-
-
-
 
 
 
