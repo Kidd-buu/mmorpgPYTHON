@@ -102,7 +102,7 @@ while not done:
                     bullet.height = 0
                 else:
                     bullet.y -= 10
-        
+
     # collect gold coin
     if player.colliderect(coin):
         gold += 1
@@ -130,7 +130,11 @@ while not done:
             main_level_experience = 0
             print(f"Main Level: {main_level}")
             
-    
+    # keep objects within screen
+    player.clamp_ip(screen.get_rect())
+    tree.clamp_ip(screen.get_rect())
+    rock.clamp_ip(screen.get_rect())
+
 
     # --- Drawing code should go here
     screen.fill(WHITE)
