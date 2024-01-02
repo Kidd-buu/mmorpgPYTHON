@@ -1,5 +1,8 @@
 import pygame
 import random
+import time
+import math
+
 
 pygame.init()
 
@@ -10,6 +13,7 @@ GOLD = (255, 215, 0)
 RED = (255, 0, 0)
 BROWN = (165, 42, 42)
 GREY = (50, 50, 50)
+YELLOW =(255, 255, 0)
 
 # Set the width and height of the screen [width, height]
 size = (700, 700)
@@ -27,6 +31,13 @@ clock = pygame.time.Clock()
 player = pygame.Rect(50, 50, 50, 50)
 player_hp = 100
 player_speed = 5
+
+#set up NPC
+npc = pygame.Rect(50, 50, 50, 50)
+npc_hp = 100
+npc_speed = 5
+
+
 
 # Set up the tree
 tree = pygame.Rect(500, 50, 50, 50)
@@ -54,6 +65,7 @@ main_level_experience_needed = 10
 
 # Set up the font
 font = pygame.font.SysFont(None, 25)
+print("1")
 
 # -------- Main Program Loop -----------
 while not done:
@@ -61,6 +73,17 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+    npc.x += npc_speed
+    npc.y += npc_speed
+    if npc.right > screen.get_width() or npc.left < 0:
+        npc_speed *= -1
+        npc.x = max(0, min(npc.x, screen.get_width() - npc.width))
+    if npc.bottom > screen.get_height() or npc.top < 0:
+        npc_speed *= -1
+        npc.y = max(0, min(npc.y, screen.get_height() - npc.height))
+    if random.randint(1, 100) == 1:
+        npc_speed *= random.choice([-1, 1])
 
     # --- Game logic should go here
     keys = pygame.key.get_pressed()
@@ -134,6 +157,8 @@ while not done:
     player.clamp_ip(screen.get_rect())
     tree.clamp_ip(screen.get_rect())
     rock.clamp_ip(screen.get_rect())
+    npc.clamp_ip(screen.get_rect())
+   
 
 
     # --- Drawing code should go here
@@ -143,6 +168,7 @@ while not done:
     pygame.draw.rect(screen, GREY, rock)
     pygame.draw.rect(screen, GOLD, coin)
     pygame.draw.rect(screen, RED, bullet)
+    pygame.draw.rect(screen, YELLOW, npc)
     
     # Draw the experience score in the top right corner of the screen
     score_text = font.render(f"Experience: {experience}", True, BLACK)
@@ -165,3 +191,10 @@ while not done:
 
 # Close the window and quit.
 pygame.quit()
+
+
+
+
+
+
+
