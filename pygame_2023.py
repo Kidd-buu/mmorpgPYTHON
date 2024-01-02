@@ -8,6 +8,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
 RED = (255, 0, 0)
+BROWN = (165, 42, 42)
+GREY = (50, 50, 50)
 
 # Set the width and height of the screen [width, height]
 size = (700, 700)
@@ -35,9 +37,8 @@ rock = pygame.Rect(250, 50, 50, 50)
 rock_hp = 100
 
 # Set up the Gold Coin
-coin = pygame.Rect(10, 10, 10, 10)
+coin = pygame.Rect(random.randint(0, size[0]), random.randint(0, size[1]), 10, 10)
 gold_score = 0
-
 
 # Set up the experience
 experience = 0
@@ -75,6 +76,7 @@ while not done:
         coin.x = random.randint(0, size[0] - coin.width)
         coin.y = random.randint(0, size[1] - coin.height)
         
+        
      # Check if player has hit the rock
     if player.colliderect(rock):
         experience -= 1
@@ -100,8 +102,8 @@ while not done:
     # --- Drawing code should go here
     screen.fill(WHITE)
     pygame.draw.rect(screen, BLACK, player)
-    pygame.draw.rect(screen, BLACK, tree)
-    pygame.draw.rect(screen, BLACK, rock)
+    pygame.draw.rect(screen, BROWN, tree)
+    pygame.draw.rect(screen, GREY, rock)
     pygame.draw.rect(screen, GOLD, coin)
 
     # Draw the experience score in the top right corner of the screen
