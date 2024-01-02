@@ -36,6 +36,9 @@ tree_hp = 10
 rock = pygame.Rect(250, 50, 50, 50)
 rock_hp = 100
 
+#creating bullet for player
+bullet = pygame.Rect(5, 5, 5, 5)
+
 # Set up the Gold Coin
 coin = pygame.Rect(random.randint(0, size[0]), random.randint(0, size[1]), 10, 10)
 gold_score = 0
@@ -69,6 +72,36 @@ while not done:
         player.y -= player_speed
     if keys[pygame.K_DOWN]:
         player.y += player_speed
+        
+        # shoot circle object
+    if keys[pygame.K_SPACE]:
+        circle = pygame.draw.circle(screen, RED, (player.x + player.width // 2, player.y + player.height // 2), 10)
+        if circle.colliderect(tree):
+            tree_hp -= 2
+            if tree_hp <= 0:
+                tree_hp = 0
+                tree.width = 0
+                tree.height = 0
+                tree.x = -100
+                tree.y = -100
+    # shoot straight object
+    if keys[pygame.K_SPACE]:
+        bullet = pygame.draw.circle(screen, BLACK, (player.x + player.width // 2, player.y), 5)
+        bullet.y -= 10
+        if bullet.colliderect(tree):
+            tree_hp -= 2
+            if tree_hp <= 0:
+                tree_hp = 0
+                tree.width = 0
+                tree.height = 0
+                tree.x = -100
+                tree.y = -100
+    # update bullet position
+                if bullet.y < 0:
+                    bullet.width = 0
+                    bullet.height = 0
+                else:
+                    bullet.y -= 10
         
     # collect gold coin
     if player.colliderect(coin):
@@ -105,7 +138,8 @@ while not done:
     pygame.draw.rect(screen, BROWN, tree)
     pygame.draw.rect(screen, GREY, rock)
     pygame.draw.rect(screen, GOLD, coin)
-
+    pygame.draw.rect(screen, RED, bullet)
+    
     # Draw the experience score in the top right corner of the screen
     score_text = font.render(f"Experience: {experience}", True, BLACK)
     screen.blit(score_text, (size[0] - score_text.get_width(), 0))
