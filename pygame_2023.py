@@ -142,7 +142,7 @@ while not done:
             main_level += -1
             main_level_experience = -1
             print(f"Main Level: {main_level}")
-        # Check if the player has hit the tree
+    # Check if the player has hit the tree
     if player.colliderect(tree):
         experience += 1
         main_level_experience += 1
@@ -158,8 +158,13 @@ while not done:
     tree.clamp_ip(screen.get_rect())
     rock.clamp_ip(screen.get_rect())
     npc.clamp_ip(screen.get_rect())
-   
 
+     # Draw the health bars
+    player_health = font.render(f"Player_HP: {player_hp}", True, RED)
+    screen.blit(player_health, (size[0] - player_health.get_width(), 15))
+    
+    #player_health = font.render(f"Player_HP: {player_hp}", True, RED)
+    #screen.blit(player_health, (0, size[1] - player_health.get_height()))
 
     # --- Drawing code should go here
     screen.fill(WHITE)
